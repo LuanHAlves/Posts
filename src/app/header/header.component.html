@@ -1,1 +1,6 @@
-<mat-toolbar color="primary">{{ title }}</mat-toolbar>
+<mat-toolbar color="primary">
+  <a>{{ title }}</a>
+  <span class="spacer"></span>
+  <a mat-button routerLink="/create" routerLinkActive="mat-accent">{{ createPost }}</a>
+  <a mat-button routerLink="/" routerLinkActive="mat-accent">{{ posts }}</a>
+</mat-toolbar>

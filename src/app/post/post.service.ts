@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -11,7 +12,7 @@ export class PostService {
   private postUpdaded = new Subject<Post[]>();
   private urlApiPost = 'http://localhost:3000/api/posts';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getPost() {
     this.http
@@ -43,9 +44,10 @@ export class PostService {
       .post<{ message: string; postId: string }>(this.urlApiPost, post)
       .subscribe((responseData) => {
         const id = responseData.postId;
-        post.id = id
+        post.id = id;
         this.posts.push(post);
         this.postUpdaded.next([...this.posts]);
+        this.router.navigate(["/"])
       });
   }
 
