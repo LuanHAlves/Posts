@@ -1,5 +1,9 @@
-import { Component, EventEmitter } from '@angular/core';
-import { enableDebugTools } from '@angular/platform-browser';
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+import { Post } from '../post.model';
+import { PostService } from '../post.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-post-create',
@@ -9,11 +13,15 @@ import { enableDebugTools } from '@angular/platform-browser';
 export class PostCreateComponent {
   enteredTitle = '';
   enteredContent = '';
+  errorMsg: string = 'Campo Obrigatório';
 
-  onAddPost() {
-    const post = {
-      title: this.enteredTitle,
-      content: this.enteredContent,
-    };
+  constructor(public postService: PostService) {}
+
+  onAddPost(form: NgForm) {
+    if (form.invalid) {
+      return this.errorMsg;
+    }
+    this.postService.addPost(form.value.title, form.value.content);
+    form.resetForm();
   }
 }

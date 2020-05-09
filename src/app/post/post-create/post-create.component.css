@@ -2,3 +2,9 @@ mat-form-field,
 textarea {
   width: 100%;
 }
+
+.save-button-container {
+  display: table;
+  width: 100%;
+  text-align: right;
+}
