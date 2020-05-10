@@ -8,3 +8,7 @@ textarea {
   width: 100%;
   text-align: right;
 }
+
+input[type="file"] {
+  visibility: hidden;
+}

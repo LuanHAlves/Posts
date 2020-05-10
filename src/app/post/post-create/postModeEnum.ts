@@ -1,4 +1,4 @@
-export enum postMode {
-  create = 'create',
-  edit = 'edit',
+export enum PostModeEnum {
+  create = 'CREATE',
+  edit = 'EDIT',
 }

@@ -25,11 +25,22 @@ router.get("", (req, res, next) => {
   });
 });
 
+router.put("/:id", (req, res, next) =>{
+  const post = new Post({
+    _id: req.body.id,
+    title: req.body.title,
+    content: req.body.content
+  });
+  Post.updateOne({_id: req.params.id}, post).then((result) =>{
+    console.log(result);
+    res.status(200).json({message: "Post Atualizado"})
+  })
+});
+
 router.delete("/:id", (req, res, next) => {
   Post.deleteOne({ _id: req.params.id }).then((result) => {
     res.status(200).json({ message: "Post deletado" });
   });
 });
-
 
 module.exports = router;

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { identifierModuleUrl } from '@angular/compiler';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -14,7 +15,7 @@ export class PostService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getPost() {
+  getPosts() {
     this.http
       .get<{ message: string; posts: any }>(this.urlApiPost)
       .pipe(
@@ -34,6 +35,10 @@ export class PostService {
       });
   }
 
+  getPost(id: string) {
+    return { ...this.posts.find((p) => p.id === id) };
+  }
+
   getPostUpdatedListener() {
     return this.postUpdaded.asObservable();
   }
@@ -47,8 +52,16 @@ export class PostService {
         post.id = id;
         this.posts.push(post);
         this.postUpdaded.next([...this.posts]);
-        this.router.navigate(["/"])
+        this.router.navigate(['/']);
       });
+  }
+
+  updatePost(id: string, title: string, content: string) {
+    const post: Post = { id: id, title: title, content: content };
+    this.http
+      .put(this.urlApiPost + '/' + id, post)
+      .subscribe((response) => {console.log(response)});
+      this.router.navigate(['/']);
   }
 
   deletePost(postId: string) {

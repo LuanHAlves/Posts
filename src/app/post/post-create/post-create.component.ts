@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validator, Validators } from '@angular/forms';
 
 import { PostService } from '../post.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { postMode } from './postModeEnum';
+import { PostModeEnum } from './postModeEnum';
+import { Post } from '../post.model';
 
 @Component({
   selector: 'app-post-create',
@@ -15,27 +16,56 @@ export class PostCreateComponent implements OnInit {
   enteredContent = '';
   errorMsg: string = 'Campo Obrigatório';
   isLoading = false;
-  private mode;
+  post: Post;
+  mode: string = PostModeEnum.create;
+  form: FormGroup;
   private postId: string;
 
   constructor(public postService: PostService, public route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.form = new FormGroup({
+      title: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(3)],
+      }),
+      content: new FormControl(null, { validators: [Validators.required] }),
+      image: new FormControl(null, {validators: []})
+    });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
-        this.mode = postMode.edit;
-        // funcao de edicao sera implementada futuramente.
+        this.mode = PostModeEnum.edit;
+        this.postId = paramMap.get('postId');
+        this.post = this.postService.getPost(this.postId);
+        this.form.setValue({
+          title: this.post.title,
+          content: this.post.content,
+        });
       } else {
-        this.mode = postMode.create;
+        this.mode = PostModeEnum.create;
+        this.postId = null;
       }
     });
   }
+  onImagePick(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.form.patchValue({image: file});
+    this.form.get('image').updateValueAndValidity();
+  }
 
-  onAddPost(form: NgForm) {
-    if (form.invalid) {
+  onSavePost() {
+    if (this.form.invalid) {
       return this.errorMsg;
     }
-    this.postService.addPost(form.value.title, form.value.content);
-    form.resetForm();
+    this.isLoading = true;
+    if (this.mode === PostModeEnum.create) {
+      this.postService.addPost(this.form.value.title, this.form.value.content);
+    } else {
+      this.postService.updatePost(
+        this.postId,
+        this.form.value.title,
+        this.form.value.content
+      );
+    }
+    this.form.reset();
   }
 }
