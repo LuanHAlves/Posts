@@ -1,32 +1,27 @@
 <mat-card>
-  <form [formGroup]="form" (submit)="onSavePost()" >
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form [formGroup]="form" (submit)="onSavePost()" *ngIf="!isLoading">
     <mat-form-field>
-      <input
-        matInput
-        type="text"
-        formControlName="title"
-        placeholder="Post title"
-      />
+      <input matInput type="text" formControlName="title"  placeholder="Post title"/>
       <mat-error *ngIf="form.get('title').invalid">{{ errorMsg }}</mat-error>
     </mat-form-field>
-    <div class="save-button-container">
-      <input type="file" #filePicker (change)="onImagePick($event)"/>
-      <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Image</button>
+    <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview && form.get('image').valid">
+      <img [src]="imagePreview" [alt]="form.value.title" />
     </div>
     <mat-form-field>
-      <textarea
-        matInput
-        rows="5"
-        placeholder="Something you'd like to post here"
-        formControlName="content"
+      <textarea  matInput  rows="3" placeholder="Something you'd like to post here"  formControlName="content"
       ></textarea>
       <mat-error *ngIf="form.get('content').invalid">{{ errorMsg }}</mat-error>
     </mat-form-field>
     <div class="save-button-container">
-      <button mat-raised-button color="accent" type="submit" *ngIf="mode == 'CREATE'">
+      <input type="file" #filePicker (change)="onImagePick($event)" />
+      <button mat-stroked-button type="button" (click)="filePicker.click()">
+        Pick Image
+      </button>
+      <button mat-raised-button color="accent" type="submit"  *ngIf="mode == 'CREATE'">
         Save Post
       </button>
-      <button mat-raised-button color="accent" type="submit" *ngIf="mode == 'EDIT'">
+      <button mat-raised-button color="accent" type="submit"  *ngIf="mode == 'EDIT'">
         Update Post
       </button>
     </div>
