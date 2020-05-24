@@ -1,6 +1,18 @@
 <mat-toolbar color="primary">
   <a>{{ title }}</a>
   <span class="spacer"></span>
-  <a mat-button routerLink="/create" routerLinkActive="mat-accent">{{ createPost }}</a>
-  <a mat-button routerLink="/" routerLinkActive="mat-accent">{{ posts }}</a>
+  <ul>
+    <li>
+      <a mat-button routerLink="/" routerLinkActive="mat-accent">Posts</a>
+    </li>
+    <li>
+      <a mat-button routerLink="/create" routerLinkActive="mat-accent">Create post</a>
+    </li>
+    <li>
+      <a mat-button routerLink="/login" routerLinkActive="mat-accent">Login</a>
+    </li>
+    <li>
+      <a mat-button routerLink="/signup" routerLinkActive="mat-accent">Sign Up</a>
+    </li>
+  </ul>
 </mat-toolbar>

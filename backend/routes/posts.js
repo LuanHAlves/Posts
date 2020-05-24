@@ -36,7 +36,6 @@ router.post(
       content: req.body.content,
       imagePath: url + "/images/" + req.file.filename,
     });
-    console.log(post);
     post.save().then((createdPost) => {
       res.status(201).json({
         message: "Post added successfully",
@@ -52,12 +51,25 @@ router.post(
 );
 
 router.get("", (req, res, next) => {
-  Post.find().then((documents) => {
-    res.status(200).json({
-      message: "Post fetched succesfully!",
-      posts: documents,
+  const pageSize = Number.parseInt(req.query.pagesSize);
+  const currentPage = Number.parseInt(req.query.page);
+  const postQuery = Post.find();
+  let fetchedPosts;
+  if (pageSize && currentPage) {
+    postQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  }
+  postQuery
+    .then((documents) => {
+      fetchedPosts = documents;
+      return Post.count();
+    })
+    .then((count) => {
+      res.status(200).json({
+        message: "Post fetched succesfully!",
+        posts: fetchedPosts,
+        maxPosts: count,
+      });
     });
-  });
 });
 
 router.get("/:id", (req, res, next) => {
@@ -87,7 +99,6 @@ router.put(
       imagePath: imagePath,
     });
     Post.updateOne({ _id: req.params.id }, post).then((result) => {
-      console.log(result);
       res.status(200).json({ message: "Post Atualizado" });
     });
   }

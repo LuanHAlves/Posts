@@ -3,17 +3,21 @@
   margin-top: 1rem;
 }
 
-.info-text {
-  text-align: center;
-  color: #ff4081;
+mat-paginator {
+  margin-top: 5px;
+}
+
+mat-expansion-panel {
+  margin-top: 1rem;
 }
 
 mat-spinner {
   margin: auto;
 }
 
-mat-expansion-panel {
-  margin-top: 1rem;
+.info-text {
+  text-align: center;
+  color: #ff4081;
 }
 
 .post-image {

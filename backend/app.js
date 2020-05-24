@@ -13,9 +13,11 @@ mongoose
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => {
-    console.log("Conectado ao banco de dados ;)");
+    console.log("Conectado ao banco de dados :)");
   })
-  .catch(() => console.log("Falha na conexão :("));
+  .catch(() => {
+    console.log("Falha na conexão :(");
+  });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

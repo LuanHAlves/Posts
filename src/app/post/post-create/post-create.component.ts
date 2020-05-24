@@ -16,6 +16,8 @@ export class PostCreateComponent implements OnInit {
   enteredTitle = '';
   enteredContent = '';
   errorMsg: string = 'Campo Obrigatório';
+  imgErrorMsg: string = 'Imagem é obrigatório'
+  existImg: boolean = true;
   isLoading = false;
   post: Post;
   mode: string = PostModeEnum.create;
@@ -43,7 +45,6 @@ export class PostCreateComponent implements OnInit {
         this.isLoading = true;
         this.postService.getPost(this.postId).subscribe((postData) => {
           this.isLoading = false;
-          console.log('test-ngOnInit-3');
           this.post = {
             id: postData._id,
             title: postData.title,
@@ -76,6 +77,10 @@ export class PostCreateComponent implements OnInit {
 
   onSavePost() {
     if (this.form.invalid) {
+      if(this.form.value.image === null){
+        this.existImg = false
+        return this.imgErrorMsg;
+      }
       return this.errorMsg;
     }
     this.isLoading = true;
