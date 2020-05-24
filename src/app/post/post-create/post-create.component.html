@@ -9,6 +9,7 @@
     </div>
     <div class="image-preview-no-img" *ngIf="imagePreview === '' || !imagePreview ">
       <img src="https://img.icons8.com/clouds/100/000000/no-image.png"/>
+      <P>No Image</P>
       <mat-error *ngIf="!existImg">{{ imgErrorMsg }}</mat-error>
     </div>
     <mat-form-field>
