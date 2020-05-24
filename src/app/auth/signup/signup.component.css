@@ -3,6 +3,6 @@ textarea {
   width: 100%;
 }
 
-mat-spinner {
-  margin: auto;
+.div-mat-spinner {
+  margin-left: 20px;
 }
