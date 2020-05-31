@@ -34,7 +34,7 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.posts = postData.posts;
       });
       this.userIsAutheticated = this.authService.getIsAuthenticated();
-    this.authService.getAuthStatusListener().subscribe(isAutheticated => {
+      this.authStatusSub = this.authService.getAuthStatusListener().subscribe(isAutheticated => {
       this.userIsAutheticated = isAutheticated;
     })
   }
@@ -50,9 +50,9 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.postService.getPosts(this.postsPerPage, this.currentPage);
   }
 
-  onDelete(postId: string) {
+  onDelete(post: Post) {
     this.isLoading = true;
-    this.postService.deletePost(postId).subscribe(() => {
+    this.postService.deletePost(post.id).subscribe(() => {
       if (this.posts.length === 1) {
         this.currentPage = 1;
       }

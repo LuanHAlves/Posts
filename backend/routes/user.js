@@ -33,7 +33,8 @@ router.post("/signup", (req, res, next) => {
 
 router.post("/login", (req, res, next) => {
   let fetchedUser;
-  User.findOne({ email: req.body.email }).then((user) => {
+  User.findOne({ email: req.body.email })
+    .then((user) => {
       if (!user) {
         return res.status(401).json({
           message: "Usuario não encontrado",
@@ -55,6 +56,7 @@ router.post("/login", (req, res, next) => {
       );
       res.status(200).json({
         token: token,
+        expiresIn: 3600,
       });
     })
     .catch((err) => {

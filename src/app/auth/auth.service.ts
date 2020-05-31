@@ -9,7 +9,8 @@ import { AuthData } from './auth-data.model';
 export class AuthService {
   private urlApiUser = 'http://localhost:3000/api/user/';
   private isAutheticated = false;
-  private token: string
+  private token: string;
+  private tokenTimer: any;
   private authStatusListener = new Subject<boolean>();
 
   constructor(private http: HttpClient, private router: Router) { }
@@ -43,21 +44,71 @@ export class AuthService {
       email: email,
       password: password,
     }
-    this.http.post<{ token: string }>(this.urlApiUser + "login", authData).subscribe(response => {
+    this.http.post<{ token: string, expiresIn: number }>(this.urlApiUser + "login", authData).subscribe(response => {
       const token = response.token;
       this.token = token
       if (token) {
+        const expiresInDuration = response.expiresIn;
+        this.setAuthTimer(3600);
         this.isAutheticated = true;
         this.authStatusListener.next(true);
+        const now = new Date()
+        const expiresData = new Date(now.getTime() + expiresInDuration * 1000);
+        this.saveAuthData(token, expiresData)
         this.router.navigate(['/'])
       }
     })
+  }
+
+  autoAuthUser() {
+    const authInfo = this.getAuthData();
+    if(!authInfo){
+      return;
+    }
+    const now = new Date();
+    const expiresIn = authInfo.expiresData.getTime() - now.getTime();
+    if (expiresIn > 0) {
+      this.token = authInfo.token
+      this.isAutheticated = true;
+      this.setAuthTimer(expiresIn / 100)
+      this.authStatusListener.next(true)
+    }
   }
 
   logout() {
     this.token = null;
     this.isAutheticated = false;
     this.authStatusListener.next(false);
-    this.router.navigate(['/'])
+    clearTimeout(this.tokenTimer)
+    this.clearAuthData();
+    this.router.navigate(['/']);
   }
+
+  private saveAuthData(token: string, expiresData: Date) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('expiresData', expiresData.toISOString());
+  }
+
+  private clearAuthData() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expiresData');
+  }
+  private getAuthData() {
+    const token = localStorage.getItem('token');
+    const expiresData = localStorage.getItem('expiresData');
+
+    if (!token || !expiresData) {
+      return;
+    }
+    return {
+      token: token,
+      expiresData: new Date(expiresData)
+    }
+  }
+  private setAuthTimer(durationInSecond: number) {
+    this.tokenTimer = setTimeout(() => {
+      this.logout();
+    }, durationInSecond * 1000);
+  }
+
 }
