@@ -108,18 +108,28 @@ router.put(
       { _id: req.params.id, creator: req.userData.userId },
       post
     ).then((result) => {
-      res.status(200).json({ message: "Post Atualizado" });
+      if (result.nModified > 0) {
+        res.status(200).json({ message: "Post Atualizado" });
+      } else {
+        res.status(401).json({ message: "Sem permisão para atualizar este post" });
+      }
     });
   }
 );
 
 router.delete("/:id", checkAuth, (req, res, next) => {
-  Post.findByIdAndDelete({ _id: req.params.id, creator: req.userData.userId, })
-  .then((result) => {
-    fs.unlink(returnImagePath(result.imagePath), (error) => {
-      if (error) throw error;
-    });
-    res.status(200).json({ message: "Post deletado" });
+  Post.findOneAndDelete({
+    _id: req.params.id,
+    creator: req.userData.userId,
+  }).then((result) => {
+    if (result) {
+      res.status(200).json({ message: "Post deletado" });
+      fs.unlink(returnImagePath(result.imagePath), (error) => {
+        if (error) throw error;
+      });
+    } else {
+      res.status(401).json({ message: "Sem permisão para deletar este post" });
+    }
   });
 });
 
