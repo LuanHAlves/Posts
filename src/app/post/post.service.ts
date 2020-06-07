@@ -34,7 +34,7 @@ export class PostService {
         })
       )
       .subscribe((transformedPostData) => {
-        this.posts = transformedPostData .posts;
+        this.posts = transformedPostData.posts;
         this.postUpdaded.next({
           posts: [...this.posts],
           postCount: transformedPostData.maxPosts
@@ -43,7 +43,13 @@ export class PostService {
   }
 
   getPost(id: string) {
-    return this.http.get<{ _id: string; title: string; content: string; imagePath: string }>(this.urlApiPost + id);
+    return this.http.get<{
+      _id: string;
+      title: string;
+      content: string;
+      imagePath: string;
+      creator: string
+    }>(this.urlApiPost + id);
   }
 
   getPostUpdatedListener() {
@@ -76,6 +82,7 @@ export class PostService {
         title: title,
         content: content,
         imagePath: image,
+        creator: null,
       };
     }
     this.http
