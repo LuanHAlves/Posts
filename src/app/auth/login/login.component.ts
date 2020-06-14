@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authService.login(loginForm.value.email, loginForm.value.password);
     this.authService.getAuthStatusListener().subscribe(authStatus =>{
       if(!authStatus) {
-        this.errMsg = "Ops! Usuárioou senha inválido."
+        this.errMsg = "Ops! Usuário ou senha inválido."
         this.authErr = true;
       } else {
         this.authErr = false;
