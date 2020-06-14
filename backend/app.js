@@ -10,7 +10,7 @@ const app = express();
 
 mongoose
   .connect(
-    "mongodb+srv://app-angular-lu:qyIc8ww5XySVELhU@cluster0-qbprq.mongodb.net/post-database-app?retryWrites=true&w=majority",
+    process.env.MONGO_ATLAS_CREDENTIALS,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => {

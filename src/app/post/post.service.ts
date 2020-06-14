@@ -5,22 +5,25 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { environment } from '../../environments/environment'
+
+const BACKEND_URL = environment.apiUrl + '/posts/';
+
 @Injectable({ providedIn: 'root' })
 export class PostService {
   private posts: Post[] = [];
   private postUpdaded = new Subject<{ posts: Post[], postCount: number }>();
-  private urlApiPost = 'http://localhost:3000/api/posts/';
 
   constructor(private http: HttpClient, private router: Router) { }
 
   getPosts(postsPerPage: number, currentPage: number) {
     const queryParams = `?pagesSize=${postsPerPage}&page=${currentPage}`
     this.http
-      .get<{ message: string; posts: any, maxPosts: number }>(this.urlApiPost + queryParams)
+      .get<{ message: string; posts: any, maxPosts: number }>(BACKEND_URL + queryParams)
       .pipe(
         map((postData) => {
           return {
-            posts: postData.posts.map((post) => {
+            posts: postData.posts.map((post: { title: any; content: any; _id: any; imagePath: any; creator: any; }) => {
               return {
                 title: post.title,
                 content: post.content,
@@ -49,7 +52,7 @@ export class PostService {
       content: string;
       imagePath: string;
       creator: string
-    }>(this.urlApiPost + id);
+    }>(BACKEND_URL + id);
   }
 
   getPostUpdatedListener() {
@@ -62,7 +65,7 @@ export class PostService {
     postData.append('content', content);
     postData.append('image', image, title);
     this.http
-      .post<{ message: string; post: Post }>(this.urlApiPost, postData)
+      .post<{ message: string; post: Post }>(BACKEND_URL, postData)
       .subscribe((responseData) => {
         this.router.navigate(['/']);
       });
@@ -86,13 +89,13 @@ export class PostService {
       };
     }
     this.http
-      .put(this.urlApiPost + id, postData)
+      .put(BACKEND_URL + id, postData)
       .subscribe((response) => {
         this.router.navigate(['/']);
       });
   }
 
   deletePost(postId: string) {
-    return this.http.delete(this.urlApiPost + postId);
+    return this.http.delete(BACKEND_URL + postId);
   }
 }

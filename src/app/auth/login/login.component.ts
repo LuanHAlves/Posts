@@ -10,6 +10,8 @@ import { Subscription } from 'rxjs';
 })
 export class LoginComponent implements OnInit, OnDestroy {
   isLoading = false;
+  authErr = false;
+  errMsg = "";
   private authStatusSub: Subscription
 
   constructor(public authService: AuthService) { }
@@ -26,6 +28,14 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
     this.isLoading = true
     this.authService.login(loginForm.value.email, loginForm.value.password);
+    this.authService.getAuthStatusListener().subscribe(authStatus =>{
+      if(!authStatus) {
+        this.errMsg = "Ops! Usuárioou senha inválido."
+        this.authErr = true;
+      } else {
+        this.authErr = false;
+      }
+    });
   }
 
   ngOnDestroy() {

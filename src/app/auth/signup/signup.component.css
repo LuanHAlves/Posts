@@ -6,3 +6,12 @@ textarea {
 .div-mat-spinner {
   margin-left: 20px;
 }
+
+.error-card {
+  margin-bottom: 15px;
+  background-color: #f44336;
+  color: white;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}

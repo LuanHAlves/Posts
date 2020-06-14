@@ -9,6 +9,8 @@ import { Subscription } from 'rxjs';
 })
 export class SignupComponent implements OnInit, OnDestroy {
   isLoading = false;
+  authErr = false;
+  errMsg = "";
   private authStatusSub: Subscription
   constructor(public authService: AuthService) { }
 
@@ -24,6 +26,14 @@ export class SignupComponent implements OnInit, OnDestroy {
     }
     this.isLoading = true;
     this.authService.createUser(signForm.value.name, signForm.value.email, signForm.value.password);
+    this.authService.getAuthStatusListener().subscribe(authStatus =>{
+      if(!authStatus) {
+        this.errMsg = "Humm! Acho que esse e-mail já esta em uso."
+        this.authErr = true;
+      } else {
+        this.authErr = false;
+      }
+    });
   }
 
   ngOnDestroy() {
